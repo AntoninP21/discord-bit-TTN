@@ -28,7 +28,7 @@ client.once('ready', () => {
             const guild = client.guilds.cache.get(guildID);
             if (guild) {
                 const voiceChannels = guild.channels.cache.filter(channel => channel.type === ChannelType.GuildVoice);
-                if (voiceChannels.size > 0) {
+                if (voiceChannels.size > 0) {                    
                     
                     let maxUsers = 0;
                     let maxChannels = [];
@@ -37,12 +37,12 @@ client.once('ready', () => {
                         if (userCount > maxUsers) {
                             maxUsers = userCount;
                             maxChannels = [channel];
-                        } else if (userCount === maxUsers) {
+                        } else if ((userCount === maxUsers) && userCount > 0) {
                             maxChannels.push(channel);
                         }
                     });
 
-                    if (maxChannels.length > 0) {
+                    if (maxChannels.length > 0) {                        
                         
                         const chosenChannel = maxChannels[Math.floor(Math.random() * maxChannels.length)];
                         const connection = joinVoiceChannel({
