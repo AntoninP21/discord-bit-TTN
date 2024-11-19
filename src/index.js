@@ -76,14 +76,16 @@ client.once('ready', () => {
                             }, 4000); // 5000 ms = 5 secondes
                         });
 
-                        console.log('Rejoint le salon vocal et joue le son!');
+                        console.log('Join in salon vocal');
                     } else {
                         console.log('Aucun salon vocal trouvé avec des utilisateurs connectés.');
                     }
                 } else {
-                    console.log('Aucun salon vocal trouvé.');
+                    console.log('Nothing was not be find');
                 }
             } else {
+
+                console.log('Guilde was not find.');
                 console.log('Guilde non trouvée !.');
             }
         }
