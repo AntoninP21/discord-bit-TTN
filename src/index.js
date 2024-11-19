@@ -1,10 +1,10 @@
 require('dotenv').config();
 const { Client, IntentsBitField, ChannelType } = require('discord.js');
-const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus, entersState} = require('@discordjs/voice');
+const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus, entersState } = require('@discordjs/voice');
 const path = require('path');
 const gTTs = require('gtts');
-const MP3_PATH = path.join(__dirname, 'ttn.mp3'); 
-const guildID = process.env.GUILD_ID; 
+const MP3_PATH = path.join(__dirname, 'ttn.mp3');
+const guildID = process.env.GUILD_ID;
 console.log(MP3_PATH);
 const tmpPath = path.join(__dirname, 'tmp.mp3');
 const client = new Client({
@@ -19,17 +19,17 @@ client.once('ready', () => {
 
     const checkTimeAndJoinChannel = async () => {
         const now = new Date();
-        const currentHour = (now.getHours()+2)%24;
+        const currentHour = (now.getHours() + 2) % 24;
         const currentMinute = now.getMinutes();
 
-        const isTargetTime = currentHour === currentMinute; 
+        const isTargetTime = currentHour === currentMinute;
 
         if (isTargetTime) {
             const guild = client.guilds.cache.get(guildID);
             if (guild) {
                 const voiceChannels = guild.channels.cache.filter(channel => channel.type === ChannelType.GuildVoice);
-                if (voiceChannels.size > 0) {                    
-                    
+                if (voiceChannels.size > 0) {
+
                     let maxUsers = 0;
                     let maxChannels = [];
                     voiceChannels.forEach(channel => {
@@ -42,8 +42,8 @@ client.once('ready', () => {
                         }
                     });
 
-                    if (maxChannels.length > 0) {                        
-                        
+                    if (maxChannels.length > 0) {
+
                         const chosenChannel = maxChannels[Math.floor(Math.random() * maxChannels.length)];
                         const connection = joinVoiceChannel({
                             channelId: chosenChannel.id,
@@ -52,20 +52,20 @@ client.once('ready', () => {
                         });
                         const resource = createAudioResource(MP3_PATH);
                         const player = createAudioPlayer();
-                        
+
                         connection.subscribe(player);
                         player.play(resource);
 
-			const gtts = new gTTs(`il est ${currentHour} heures et ${currentMinute} minutes`, 'fr');
-			await new Promise((resolve, reject) => {
-		       	    gtts.save(tmpPath, function (err, result) {
-	        		if (err) return reject(err);
-	  	                resolve(result);
-			    });
-			});
-			await entersState(player, AudioPlayerStatus.Idle, 30e3);
-			const resource2 = createAudioResource(tmpPath);
-			player.play(resource2);
+                        const gtts = new gTTs(`il est ${currentHour} heures et ${currentMinute} minutes`, 'fr');
+                        await new Promise((resolve, reject) => {
+                            gtts.save(tmpPath, function (err, result) {
+                                if (err) return reject(err);
+                                resolve(result);
+                            });
+                        });
+                        await entersState(player, AudioPlayerStatus.Idle, 30e3);
+                        const resource2 = createAudioResource(tmpPath);
+                        player.play(resource2);
                         player.on(AudioPlayerStatus.Idle, () => {
                             console.log('Lecture audio terminée. Déconnexion dans 5 secondes.');
                             setTimeout(() => {
@@ -76,20 +76,20 @@ client.once('ready', () => {
                             }, 4000); // 5000 ms = 5 secondes
                         });
 
-                        console.log('Rejoint le salon vocal et joue le son!');
+                        console.log('Join in salon vocal');
                     } else {
                         console.log('Aucun salon vocal trouvé avec des utilisateurs connectés.');
                     }
                 } else {
-                    console.log('Aucun salon vocal trouvé.');
+                    console.log('Nothing was not be find');
                 }
             } else {
-                console.log('Guilde non trouvée.');
+                console.log('Guilde was not find.');
             }
         }
     };
 
-    
+
     setInterval(checkTimeAndJoinChannel, 60000); // 60000ms = 1 minute
 });
 client.login(process.env.TOKEN);
