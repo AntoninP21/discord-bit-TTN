@@ -84,7 +84,9 @@ client.once('ready', () => {
                     console.log('Nothing was not be find');
                 }
             } else {
+
                 console.log('Guilde was not find.');
+                console.log('Guilde non trouvée !.');
             }
         }
     };
